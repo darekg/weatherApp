@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 
-class MainWeatherVC: UIViewController {
+class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var currentTempLabel: UILabel!
@@ -19,6 +19,8 @@ class MainWeatherVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupLayout()
         
         
     }
@@ -60,6 +62,29 @@ class MainWeatherVC: UIViewController {
             Height(40)
         )
     }
+    
+    //MARK: TableView Data Source Methods
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 }
 
