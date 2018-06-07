@@ -17,11 +17,16 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     @IBOutlet weak var currentWeatherImage: UIImageView!
     @IBOutlet weak var typeWeather: UILabel!
     
+    var currentWeather = CurrentWeather()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupLayout()
         
+        currentWeather.downloadWeatherDetail {
+            
+        }
         
     }
 
