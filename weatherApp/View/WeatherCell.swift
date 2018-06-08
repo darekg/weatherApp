@@ -27,8 +27,8 @@ class WeatherCell: UITableViewCell {
     func configureCell(with forecast: ForecastWeather) {
         dayLabel.text = forecast.date
         typeWeather.text = forecast.typeWeather
-        hightTemp.text = forecast.hightTemp
-        lowTemp.text = forecast.lowTemp
+        hightTemp.text = "\(forecast.hightTemp) °C"
+        lowTemp.text = "\(forecast.lowTemp) °C"
         weatherImage.image = UIImage(named: forecast.typeWeather)
     }
     
@@ -42,14 +42,14 @@ class WeatherCell: UITableViewCell {
         
         dayLabel.easy.layout(
             Top(15),
-            Left(32),
+            Left(32).to(weatherImage),
             Width(105),
             Height(25)
         )
         
         typeWeather.easy.layout(
             Top(5).to(dayLabel),
-            Left(32),
+            Left(32).to(weatherImage),
             Width(105),
             Height(25)
         )
@@ -57,14 +57,14 @@ class WeatherCell: UITableViewCell {
         hightTemp.easy.layout(
             Top(15),
             Right(36),
-            Width(75),
+            Width(65),
             Height(25)
         )
         
         lowTemp.easy.layout(
             Top(5).to(hightTemp),
             Right(36),
-            Width(75),
+            Width(65),
             Height(25)
         )
     }

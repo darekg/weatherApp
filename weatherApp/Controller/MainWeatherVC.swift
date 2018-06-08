@@ -37,6 +37,7 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -114,6 +115,7 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             
             let forecast = forecastArray[indexPath.row]
             cell.configureCell(with: forecast)
+            cell.selectionStyle = .none
             
             return cell
             
@@ -125,7 +127,7 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func setupCurrentWeatherUI() {
         dateLabel.text = currentWeather.date
-        currentTempLabel.text = "\(currentWeather.temp)"
+        currentTempLabel.text = "\(currentWeather.temp) °C"
         cityLabel.text = currentWeather.cityName
         currentWeatherImage.image = UIImage(named: currentWeather.typeWeather)
         typeWeather.text = currentWeather.typeWeather
