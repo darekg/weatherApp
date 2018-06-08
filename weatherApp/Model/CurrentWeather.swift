@@ -13,7 +13,7 @@ import Alamofire
 class CurrentWeather {
     
     var _date: String!
-    var _temp: Double!
+    var _temp: String!
     var _cityName: String!
     var _typeWeather: String!
     
@@ -30,9 +30,9 @@ class CurrentWeather {
         return _date
     }
     
-    var temp: Double {
+    var temp: String {
         if _temp == nil {
-            _temp = 0.0
+            _temp = ""
         }
         return _temp
     }
@@ -56,25 +56,25 @@ class CurrentWeather {
         
         Alamofire.request(CURRENT_WEATHER_URL).responseJSON { (response) in
             let result = response.result
-            
+ 
             if let dict = result.value as? Dictionary<String, Any> {
                 
                 if let cityName = dict["name"] as? String {
                     self._cityName = cityName.capitalized
-                    print(cityName)
                 }
                 
                 if let main = dict["main"] as? Dictionary<String, Any> {
                     if let temp = main["temp"] as? Double {
-                        self._temp = temp
-                        print(temp)
+                        
+                        let celsiusTemp = temp - 273.15
+                        self._temp = String(format: "%.0f", celsiusTemp)
+                        
                     }
                 }
                 
                 if let weatherType = dict["weather"] as? [Dictionary<String, Any>] {
                     if let main = weatherType[0]["main"] as? String {
                         self._typeWeather = main.capitalized
-                        print(main)
                     }
                 }
                 

@@ -9,8 +9,9 @@
 import UIKit
 import EasyPeasy
 import Alamofire
+import CoreLocation
 
-class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
     
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var currentTempLabel: UILabel!
@@ -18,6 +19,9 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     @IBOutlet weak var currentWeatherImage: UIImageView!
     @IBOutlet weak var typeWeather: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    
+    var locationManager = CLLocationManager()
+    var currentLocation: CLLocation!
     
     var currentWeather = CurrentWeather()
     var forecastArray = [ForecastWeather]()
@@ -28,16 +32,15 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         setupLayout()
         tableView.rowHeight = 80.0
         
-        currentWeather.downloadWeatherDetail {
-           
-        }
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
         
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        downloadForecastWeather {
-            
-        }
+        locationAuthStatus()
     }
 
     func setupLayout() {
@@ -82,14 +85,10 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         Alamofire.request(FORECAST_WEATHER_URL).responseJSON { (response) in
             let result = response.result
             
-   
-            
             if let dict = result.value as? Dictionary<String, Any> {
-                
-                            print(dict)
+
                 if let list = dict["list"] as? [Dictionary<String, Any>] {
 
-                    
                     for obj in list {
                         let forecast = ForecastWeather(weatherDict: obj)
                         self.forecastArray.append(forecast)
@@ -124,12 +123,34 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
     }
     
+    func setupCurrentWeatherUI() {
+        dateLabel.text = currentWeather.date
+        currentTempLabel.text = "\(currentWeather.temp)"
+        cityLabel.text = currentWeather.cityName
+        currentWeatherImage.image = UIImage(named: currentWeather.typeWeather)
+        typeWeather.text = currentWeather.typeWeather
+    }
     
-    
-    
-    
-    
-    
+    func locationAuthStatus() {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+            currentLocation = locationManager.location
+            
+            Location.sharedInstance.latitude = currentLocation.coordinate.latitude
+            Location.sharedInstance.longitude = currentLocation.coordinate.longitude
+            
+            currentWeather.downloadWeatherDetail {
+                self.downloadForecastWeather {
+                    self.setupCurrentWeatherUI()
+                }
+            }
+
+        } else {
+            locationManager.requestWhenInUseAuthorization()
+            locationAuthStatus()
+            
+            //this else trigger when we first time run the app, and we'll show popup with permition to use gps
+        }
+    }
     
     
     
