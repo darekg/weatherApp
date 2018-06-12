@@ -40,10 +40,6 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        locationAuthStatus()
-    }
-
     func setupLayout() {
         dateLabel.easy.layout(
             Top(28),
@@ -133,7 +129,9 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         typeWeather.text = currentWeather.typeWeather
     }
     
-    func locationAuthStatus() {
+    // all this function shows popup with allow permition to use gps, if user not allow, every time when they launching the app. It will show alert with message: Please enable Location Services in Settings.
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             currentLocation = locationManager.location
             
@@ -145,12 +143,15 @@ class MainWeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                     self.setupCurrentWeatherUI()
                 }
             }
-
         } else {
-            locationManager.requestWhenInUseAuthorization()
-            locationAuthStatus()
             
-            //this else trigger when we first time run the app, and we'll show popup with permition to use gps
+            let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable Location Services in Settings", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { (action) in
+                alert.dismiss(animated: true, completion: nil)
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
+            
         }
     }
     
